@@ -1,0 +1,4 @@
+pyutilb >= 1.0.6
+kazoo == 2.9.0
+GitPython == 3.1.31
+wakaq == 2.0.2
