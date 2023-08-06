@@ -1,6 +1,6 @@
 [GitHub](https://github.com/shigebeyond/jkcfg) | [Gitee](https://gitee.com/shigebeyond/jkcfg)
 
-# jkcfg - yaml驱动linux系统监控
+# jkcfg - 配置信息同步器
 
 ## 概述
 jkcfg，是配置信息同步器，整合 zookeeper 做配置信息的同步处理，能为微服务应用提供集中化的配置管理(存储与分发)。
