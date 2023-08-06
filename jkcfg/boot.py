@@ -5,6 +5,8 @@ import os
 import sys
 from optparse import OptionParser
 from pyutilb.file import read_init_file_meta
+from pyutilb.util import set_var
+
 from jkcfg.zkcfg import Zkcfg
 from jkcfg import task
 
@@ -19,7 +21,8 @@ def parse_cmd(name, version):
     usage = f'''Usage: {name} [command] [options...]
     
 Commands:
-  sync          同步配置到zookeeper上
+  pull          拉取最新配置文件
+  sync          同步配置文件到zookeeper上
   diff          对比文件: 若指定文件, 则对比本地配置文件与zookeeper上的配置文件; 若未指定文件, 则对比本地git提交与zookeeper上的提交之间
   notify        通知配置的git仓库有更新
   work          启动worker, 监听配置的git仓库更新的通知, 并同步最新配置到zookeeper上
@@ -78,6 +81,8 @@ def main():
     # 解析命令
     option, args = parse_cmd('jkcfg', meta['version'])
     command = args[0]
+    if command == 'notify' and option.redis != None:
+        set_var('redis_host', option.redis)
 
     # 执行命令对应的函数
     funs = {

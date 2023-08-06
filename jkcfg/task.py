@@ -1,15 +1,18 @@
 from datetime import timedelta
 
 from pyutilb import SchedulerThread
+from pyutilb.util import get_var
 from wakaq import WakaQ, Queue, CronTask
 from wakaq.worker import Worker
 from pyutilb.log import log
 from jkcfg.zkcfg import Zkcfg
 
-# 读redis配置
-config = Zkcfg.read_config()
-redis_host, redis_port = config['redis_host'].split(':')
-sync_interval = config.get('sync_interval', 0)
+# 获得redis连接
+redis_host = get_var('redis_host') # 读命令行选项
+if redis_host is None: # 读配置
+    config = Zkcfg.read_config()
+    redis_host = config['redis_host']
+redis_host, redis_port = redis_host.split(':')
 
 # 任务队列
 wakaq = WakaQ(
@@ -81,6 +84,7 @@ def produce():
 # 启动同步任务worker
 def start_worker():
     # 添加同步的定时任务
+    sync_interval = config.get('sync_interval', 0)
     if sync_interval > 0:
         t = SchedulerThread()
         t.add_cron_job(f"*/{sync_interval} * * * * *", sync_zk_config)
