@@ -35,7 +35,7 @@ sync_interval: 10 # 定时同步的时间间隔, 如果为0则不做定时同步
 ```
 
 ### 运行命令
-1. 拉取最新配置文件, 拉取的文件放到`工作目录/repo`仓库目录中
+#### 1. 拉取最新配置文件, 拉取的文件放到`工作目录/repo`仓库目录中
 ```sh
 jkcfg pull
 ```
@@ -49,7 +49,7 @@ default/rpcserver/redis.yml
 default/rpcserver/rpcserver.yml
 ```
 
-2. 对比本地(仓库目录)的配置文件与zookeeper上的配置文件
+#### 2. 对比本地(仓库目录)的配置文件与zookeeper上的配置文件
 ```sh
 # 整体对比: 列出zookeeper落后的配置文件
 jkcfg diff
@@ -59,25 +59,31 @@ jkcfg diff default/rpcserver/redis.yml
 执行效果如下:
 ![](img/diff.png)
 
-3. 同步本地(仓库目录)的配置文件到zookeeper上
+#### 3. 同步本地(仓库目录)的配置文件到zookeeper上
 ```sh   
 jkcfg sync
 ```
 执行效果如下:
+
 ![](img/sync.png)
 
 我们使用`zkCli.sh`命令来查看zookeeper上的节点数据
+
 ![](img/zkcfg.png)
 
 对比本地同路径的配置文件, 文件内容是一样的
+
 ![](img/localcfg.png)
 
-4. 通知同步: 发同步的消息, 一般用在Git钩子中, 在配置仓库推送时通知worker来同步
+#### 4. 通知同步: 发同步的消息, 一般用在 git 钩子中, 在配置仓库推送时通知worker来同步
 ```sh   
+# 当前目录需有 jkcfg.yml 配置文件
 jkcfg notify
+# 无需 jkcfg.yml 配置文件, 直接在命令行中指定redis消息队列
+jkcfg notify -r localhost:6379 
 ```
 
-5. 启动同步任务worker: 接收同步的消息并执行同步
+#### 5. 启动同步任务worker(接收同步的消息并执行同步) + 启动同步的定时任务(时间间隔见配置项`sync_interval`)
 ```sh   
 jkcfg work
 ```

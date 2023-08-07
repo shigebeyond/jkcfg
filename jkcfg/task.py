@@ -8,7 +8,7 @@ from pyutilb.log import log
 from jkcfg.zkcfg import Zkcfg
 
 # 获得redis连接
-redis_host = get_var('redis_host') # 读命令行选项
+redis_host = get_var('redis_host', False) # 读命令行选项
 if redis_host is None: # 读配置
     config = Zkcfg.read_config()
     redis_host = config['redis_host']
@@ -79,16 +79,19 @@ def sync_zk_config():
 
 # 生成同步任务
 def produce():
+    print("通知同步")
     sync_zk_config.delay()
 
 # 启动同步任务worker
 def start_worker():
-    # 添加同步的定时任务
+    # 启动同步的定时任务
     sync_interval = config.get('sync_interval', 0)
     if sync_interval > 0:
+        print("启动同步的定时任务")
         t = SchedulerThread()
         t.add_cron_job(f"*/{sync_interval} * * * * *", sync_zk_config)
     # 启动同步任务worker
+    print('启动同步任务worker')
     worker = Worker(wakaq=wakaq)
     worker.start()
 

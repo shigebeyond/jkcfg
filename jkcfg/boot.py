@@ -6,9 +6,7 @@ import sys
 from optparse import OptionParser
 from pyutilb.file import read_init_file_meta
 from pyutilb.util import set_var
-
 from jkcfg.zkcfg import Zkcfg
-from jkcfg import task
 
 # 解析命令的选项与参数
 # :param name 命令名
@@ -68,10 +66,13 @@ def diff(*args):
 
 # 通知同步: 生成同步任务
 def notify():
+    # 依赖于命令行选项redis, 因此要延迟加载
+    from jkcfg import task
     task.produce()
 
 # 启动同步任务worker
 def work():
+    from jkcfg import task
     task.start_worker()
 
 def main():
